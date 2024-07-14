@@ -1,5 +1,7 @@
 # SCANJS
 
+![SCANLogo](https://github.com/user-attachments/assets/9f7ef054-691f-464a-8b8c-878acb43503d)
+
 Welcome to the SCANJS repository! This project focuses on creating a Synthetic Cognitive Augmentation Network (SCAN) using JavaScript and web-based technologies to replicate and enhance prefrontal cortex (PFC) functions for decision-making, problem-solving, and planning.
 
 ## Table of Contents
