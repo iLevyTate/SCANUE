@@ -1,4 +1,4 @@
-# SCANJS
+# SCANJavaScript(JS)
 
 ![SCANJSLogo](https://github.com/user-attachments/assets/8b05b870-e5c5-49d8-a3c5-bd0b0a3d4895)
 
