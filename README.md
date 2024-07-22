@@ -1,8 +1,8 @@
-# SCANJavaScript(JS)
+# SCANUE ([SCAN](https://github.com/iLevyTate/SCAN) Using Experts.js)
 
-![SCANJSLogo](https://github.com/user-attachments/assets/8b05b870-e5c5-49d8-a3c5-bd0b0a3d4895)
+![SCANUEGITHUBLOGO](https://github.com/user-attachments/assets/3e01f56c-9dab-4b0a-a666-ecc66fe8b75b)
 
-Welcome to the SCANJS repository! This project focuses on creating a Synthetic Cognitive Augmentation Network (SCAN) using JavaScript and web-based technologies to replicate and enhance prefrontal cortex (PFC) functions for decision-making, problem-solving, and planning.
+Welcome to the SCANUE repository! This project focuses on creating a Synthetic Cognitive Augmentation Network ([SCAN](https://github.com/iLevyTate/SCAN)) using Experts.js and web-based technologies to replicate and enhance prefrontal cortex (PFC) functions for decision-making, problem-solving, and planning.
 
 ## Table of Contents
 
@@ -19,7 +19,11 @@ Welcome to the SCANJS repository! This project focuses on creating a Synthetic C
 
 ## Overview
 
-SCANJS aims to develop AI-based extensions of the prefrontal cortex (PFC). The project focuses on creating AI agents that simulate the functions of various PFC regions to assist in real-time cognitive tasks. The agents are built using Expert.js and other web technologies.
+SCANUE aims to develop AI-based extensions of the prefrontal cortex (PFC). The project focuses on creating AI agents that simulate the functions of various PFC regions to assist in real-time cognitive tasks. The agents are built using Experts.js and other web technologies.
+
+### Name Change Notification
+
+We have rebranded from SCANJS to SCANUE due to SCANJS being a deprecated project created by another developer. If "SCANJS" appears in documentation, code, or other references, this was prior to the name change.
 
 ## Features
 
@@ -42,8 +46,8 @@ Ensure you have the following installed on your system:
 Clone the repository and install the dependencies:
 
 ```bash
-git clone https://github.com/iLevyTate/scan-js.git
-cd scan-js
+git clone https://github.com/iLevyTate/scanue.git
+cd scanue
 npm install
 ```
 
@@ -72,7 +76,7 @@ After running the project, you can interact with the cognitive agents through th
 ### Project Structure
 
 ```plaintext
-/scan-js
+/scanue
   ├── .github
   │   └── workflows
   │       └── deploy.yml
@@ -92,7 +96,7 @@ After running the project, you can interact with the cognitive agents through th
 
 ## Contributing
 
-We welcome contributions to enhance the capabilities of SCANJS. To contribute:
+We welcome contributions to enhance the capabilities of SCANUE. To contribute:
 
 1. Fork the repository.
 2. Create a new branch (`git checkout -b feature/YourFeature`).
@@ -107,6 +111,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgements
 
-- **Expert.js**: For providing the framework to create AI agents.
+- **Experts.js**: For providing the framework to create AI agents.
 - **OpenAI**: For the language processing capabilities.
-- **Contributors**: Thanks to all contributors who have helped in building and improving SCANJS.
+- **Contributors**: Thanks to all contributors who have helped in building and improving SCANUE.
