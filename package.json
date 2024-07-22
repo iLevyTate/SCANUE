@@ -1,7 +1,7 @@
 {
-    "name": "scan-js",
+    "name": "SCANUE",
     "version": "1.0.0",
-    "description": "SCAN running on Expert JS",
+    "description": "SCAN Using Expert JS",
     "main": "main.js",
     "scripts": {
       "test": "mocha --timeout 10000",
