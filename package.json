@@ -15,7 +15,7 @@
       "body-parser": "^1.20.2",
       "chai": "^5.1.1",
       "dotenv": "^16.4.5",
-      "experts": "^1.3.0",
+      "experts": "^1.5.10",
       "express": "^4.19.2",
       "mocha": "^10.6.0",
       "openai": "^4.52.3",
