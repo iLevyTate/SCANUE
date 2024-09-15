@@ -1,7 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
-import { createAssistants } from './pfc.js';
+import SCAN from './main.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -20,17 +20,14 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-let assistants;
+const scan = new SCAN();
 
 app.post('/analyze', async (req, res) => {
   const { inputText } = req.body;
 
   try {
-    if (!assistants) {
-      assistants = await createAssistants();
-    }
-    const synthesizedResponse = await assistants.ACC.analyze(inputText);
-    res.json({ response: synthesizedResponse });
+    const result = await scan.processInput(inputText);
+    res.json({ response: result });
   } catch (error) {
     console.error('Error in /analyze:', error);
     res.status(500).json({ error: error.message });
@@ -39,10 +36,10 @@ app.post('/analyze', async (req, res) => {
 
 app.listen(port, async () => {
   try {
-    assistants = await createAssistants();
+    await scan.initialize();
     console.log(`Server running on http://localhost:${port}`);
   } catch (error) {
-    console.error('Error initializing assistants:', error);
+    console.error('Error initializing SCAN:', error);
     process.exit(1);
   }
 });
