@@ -10,28 +10,28 @@ class SCAN {
   }
 
   async processInput(input) {
-    // Ensure agents are initialized before processing input
     if (!this.agents) {
       await this.initialize();
     }
     
-    // Process input through each agent
-    const results = await Promise.all(Object.values(this.agents).map(agent => agent.analyze(input)));
-    return this.unifyResults(results);
+    const otherAgentOutputs = {
+      DLPFC: await this.agents.DLPFC.analyze(input),
+      VMPFC: await this.agents.VMPFC.analyze(input),
+      OFC: await this.agents.OFC.analyze(input),
+      MPFC: await this.agents.MPFC.analyze(input),
+      ACC: await this.agents.ACC.analyze(input),
+    };
+    
+    const qLearningOutput = await this.agents.QLearning(input, otherAgentOutputs);
+    
+    return this.unifyResults({...otherAgentOutputs, QLearning: qLearningOutput});
   }
 
   unifyResults(results) {
-    // Combine results from all agents into a single output
-    return results.join(' ');
+    return Object.entries(results)
+      .map(([agent, output]) => `${agent}:\n${output}`)
+      .join('\n\n');
   }
 }
-
-// Example usage
-(async () => {
-  const scan = new SCAN();
-  const input = "Example input text";
-  const output = await scan.processInput(input);
-  console.log(output);
-})();
 
 export default SCAN;
