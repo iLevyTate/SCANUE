@@ -1,23 +1,32 @@
-import { Assistant, Thread } from "experts";
+// pfc.js
+
+import { Assistant } from "experts";
 import OpenAI from "openai";
 import { MultiAgentQLearning } from './qlearning.js';
 import { refinedWordLists } from './refinedWordLists.js';
 
-const openai = new OpenAI(process.env.OPENAI_API_KEY);
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 class PFCAssistant extends Assistant {
   constructor(config) {
     super(config);
+    this.config = config;
   }
 
   async analyze(input) {
     try {
-      const thread = await Thread.create();
-      const result = await this.ask(input, thread.id);
-      await Thread.delete(thread.id);
-      return result;
+      const response = await openai.chat.completions.create({
+        model: this.config.model,
+        messages: [
+          { role: "system", content: this.config.instructions },
+          { role: "user", content: input }
+        ],
+        temperature: this.config.temperature,
+      });
+
+      return response.choices[0].message.content.trim();
     } catch (error) {
-      console.error(`Error in ${this.constructor.name}.analyze:`, error);
+      console.error(`Error in ${this.config.name}.analyze:`, error);
       throw error;
     }
   }
@@ -30,7 +39,7 @@ class DLPFCAssistant extends PFCAssistant {
       instructions: `You are an expert on the Dorsolateral Prefrontal Cortex (DLPFC).
 Focus on executive functions, working memory, and cognitive control.
 Provide insights on task complexity, attention allocation, and goal-directed behavior.`,
-      model: "gpt-4-0125-preview",
+      model: "gpt-4o-mini-2024-07-18",
       tools: [{ type: "code_interpreter" }, { type: "file_search" }],
       temperature: 0.7
     });
@@ -43,7 +52,7 @@ Provide insights on task complexity, attention allocation, and goal-directed beh
         instructions: `You are an expert on the Dorsolateral Prefrontal Cortex (DLPFC).
 Focus on executive functions, working memory, and cognitive control.
 Provide insights on task complexity, attention allocation, and goal-directed behavior.`,
-        model: "gpt-4-0125-preview",
+        model: "gpt-4o-mini-2024-07-18",
         tools: [{ type: "code_interpreter" }, { type: "file_search" }],
         temperature: 0.7
       });
@@ -62,7 +71,7 @@ class VMPFCAssistant extends PFCAssistant {
       instructions: `You are an expert on the Ventromedial Prefrontal Cortex (VMPFC).
 Focus on emotion regulation, decision-making, and value-based choices.
 Provide insights on risk assessment, social context, and personal relevance.`,
-      model: "gpt-4-0125-preview",
+      model: "gpt-4o-mini-2024-07-18",
       tools: [{ type: "code_interpreter" }, { type: "file_search" }],
       temperature: 0.7
     });
@@ -75,7 +84,7 @@ Provide insights on risk assessment, social context, and personal relevance.`,
         instructions: `You are an expert on the Ventromedial Prefrontal Cortex (VMPFC).
 Focus on emotion regulation, decision-making, and value-based choices.
 Provide insights on risk assessment, social context, and personal relevance.`,
-        model: "gpt-4-0125-preview",
+        model: "gpt-4o-mini-2024-07-18",
         tools: [{ type: "code_interpreter" }, { type: "file_search" }],
         temperature: 0.7
       });
@@ -94,7 +103,7 @@ class OFCAssistant extends PFCAssistant {
       instructions: `You are an expert on the Orbitofrontal Cortex (OFC).
 Focus on reward processing, expectation, and adaptive behavior.
 Provide insights on reward magnitude, probability, and delay considerations.`,
-      model: "gpt-4-0125-preview",
+      model: "gpt-4o-mini-2024-07-18",
       tools: [{ type: "code_interpreter" }, { type: "file_search" }],
       temperature: 0.7
     });
@@ -107,7 +116,7 @@ Provide insights on reward magnitude, probability, and delay considerations.`,
         instructions: `You are an expert on the Orbitofrontal Cortex (OFC).
 Focus on reward processing, expectation, and adaptive behavior.
 Provide insights on reward magnitude, probability, and delay considerations.`,
-        model: "gpt-4-0125-preview",
+        model: "gpt-4o-mini-2024-07-18",
         tools: [{ type: "code_interpreter" }, { type: "file_search" }],
         temperature: 0.7
       });
@@ -126,7 +135,7 @@ class MPFCAssistant extends PFCAssistant {
       instructions: `You are an expert on the Medial Prefrontal Cortex (MPFC).
 Focus on social cognition, self-referential processing, and theory of mind.
 Provide insights on perspective-taking, mentalizing, and social norms.`,
-      model: "gpt-4-0125-preview",
+      model: "gpt-4o-mini-2024-07-18",
       tools: [{ type: "code_interpreter" }, { type: "file_search" }],
       temperature: 0.7
     });
@@ -139,7 +148,7 @@ Provide insights on perspective-taking, mentalizing, and social norms.`,
         instructions: `You are an expert on the Medial Prefrontal Cortex (MPFC).
 Focus on social cognition, self-referential processing, and theory of mind.
 Provide insights on perspective-taking, mentalizing, and social norms.`,
-        model: "gpt-4-0125-preview",
+        model: "gpt-4o-mini-2024-07-18",
         tools: [{ type: "code_interpreter" }, { type: "file_search" }],
         temperature: 0.7
       });
@@ -158,7 +167,7 @@ class ACCAssistant extends PFCAssistant {
       instructions: `You are an expert on the Anterior Cingulate Cortex (ACC).
 Focus on conflict monitoring, error detection, and cognitive control.
 Provide insights on performance monitoring, adaptive behavior, and motivation.`,
-      model: "gpt-4-0125-preview",
+      model: "gpt-4o-mini-2024-07-18",
       tools: [{ type: "code_interpreter" }, { type: "file_search" }],
       temperature: 0.7
     });
@@ -171,7 +180,7 @@ Provide insights on performance monitoring, adaptive behavior, and motivation.`,
         instructions: `You are an expert on the Anterior Cingulate Cortex (ACC).
 Focus on conflict monitoring, error detection, and cognitive control.
 Provide insights on performance monitoring, adaptive behavior, and motivation.`,
-        model: "gpt-4-0125-preview",
+        model: "gpt-4o-mini-2024-07-18",
         tools: [{ type: "code_interpreter" }, { type: "file_search" }],
         temperature: 0.7
       });
@@ -191,7 +200,7 @@ class QLearningAssistant extends PFCAssistant {
 Analyze inputs to provide strategies for decision-making and learning in multi-agent environments.
 Focus on how agents representing different PFC regions can learn optimal policies through trial and error.
 Provide insights on exploration vs exploitation, value function approximation, and policy improvement in the context of PFC functions.`,
-      model: "gpt-4-0125-preview",
+      model: "gpt-4o-mini-2024-07-18",
       tools: [
         { type: "code_interpreter" },
         { type: "file_search" }
@@ -199,7 +208,7 @@ Provide insights on exploration vs exploitation, value function approximation, a
       temperature: 0.7
     });
 
-    this.qlearning = new MultiAgentQLearning(25 + 5, 5); // 25 base features + 5 agent outputs, 5 actions (one per agent)
+    this.qlearning = new MultiAgentQLearning(30, 5);
   }
 
   static async createInstance() {
@@ -210,7 +219,7 @@ Provide insights on exploration vs exploitation, value function approximation, a
 Analyze inputs to provide strategies for decision-making and learning in multi-agent environments.
 Focus on how agents representing different PFC regions can learn optimal policies through trial and error.
 Provide insights on exploration vs exploitation, value function approximation, and policy improvement in the context of PFC functions.`,
-        model: "gpt-4-0125-preview",
+        model: "gpt-4o-mini-2024-07-18",
         tools: [
           { type: "code_interpreter" },
           { type: "file_search" }
@@ -226,18 +235,14 @@ Provide insights on exploration vs exploitation, value function approximation, a
 
   async analyze(input, otherAgentOutputs) {
     try {
-      const thread = await Thread.create();
-      const response = await this.ask(input, thread.id);
-      
       const state = this.preprocessInput(input, otherAgentOutputs);
       const actions = await this.qlearning.act(state);
-      
+
       const combinedOutput = this.combineOutputs(otherAgentOutputs, actions);
       const nextState = this.simulateEnvironment(state, actions);
       const reward = this.calculateReward(state, actions, nextState, combinedOutput);
-      
+
       await this.qlearning.learn(state, actions, reward, nextState);
-      await Thread.delete(thread.id);
 
       return combinedOutput;
     } catch (error) {
@@ -328,32 +333,32 @@ Provide insights on exploration vs exploitation, value function approximation, a
   }
 
   extractFeaturesFromAgentOutputs(otherAgentOutputs) {
-    return Object.values(otherAgentOutputs).map(output => output.length / 1000); // Normalize by 1000 characters
+    return Object.values(otherAgentOutputs).map(output => output.length / 1000);
   }
 
   combineOutputs(otherAgentOutputs, actions) {
     const weights = actions.map(action => Math.exp(action));
     const totalWeight = weights.reduce((a, b) => a + b, 0);
     const normalizedWeights = totalWeight > 0 ? weights.map(w => w / totalWeight) : weights.map(() => 1 / weights.length);
-    
+
     const regionOrder = ['DLPFC', 'VMPFC', 'OFC', 'MPFC', 'ACC'];
-    const sortedRegions = regionOrder.sort((a, b) => 
+    const sortedRegions = regionOrder.sort((a, b) =>
       normalizedWeights[regionOrder.indexOf(b)] - normalizedWeights[regionOrder.indexOf(a)]
     );
 
     let output = "Integrated PFC Analysis and Action Plan\n\n";
     output += "1. Situation Overview:\n";
     output += this.generateSituationOverview(otherAgentOutputs, sortedRegions);
-    
+
     output += "\n\n2. Key Considerations:\n";
     output += this.generateKeyConsiderations(otherAgentOutputs, sortedRegions);
-    
+
     output += "\n\n3. Action Steps:\n";
     output += this.generateActionSteps(otherAgentOutputs, sortedRegions);
-    
+
     output += "\n\n4. Potential Challenges:\n";
     output += this.generatePotentialChallenges(otherAgentOutputs, sortedRegions);
-    
+
     output += "\n\n5. Long-term Outlook:\n";
     output += this.generateLongTermOutlook(otherAgentOutputs, sortedRegions);
 
@@ -361,25 +366,25 @@ Provide insights on exploration vs exploitation, value function approximation, a
   }
 
   generateSituationOverview(otherAgentOutputs, sortedRegions) {
-    return sortedRegions.slice(0, 3).map(region => 
+    return sortedRegions.slice(0, 3).map(region =>
       this.extractKeyPoint(otherAgentOutputs[region])
     ).join(" ");
   }
 
   generateKeyConsiderations(otherAgentOutputs, sortedRegions) {
-    return sortedRegions.map(region => 
+    return sortedRegions.map(region =>
       `- ${this.getRegionFocus(region)}: ${this.extractKeyPoint(otherAgentOutputs[region])}`
     ).join("\n");
   }
 
   generateActionSteps(otherAgentOutputs, sortedRegions) {
-    return sortedRegions.slice(0, 3).map((region, index) => 
+    return sortedRegions.slice(0, 3).map((region, index) =>
       `${index + 1}. ${this.getActionStep(region, otherAgentOutputs[region])}`
     ).join("\n");
   }
 
   generatePotentialChallenges(otherAgentOutputs, sortedRegions) {
-    return sortedRegions.slice(-2).map(region => 
+    return sortedRegions.slice(-2).map(region =>
       `- ${this.getChallengeFromRegion(region, otherAgentOutputs[region])}`
     ).join("\n");
   }
@@ -395,7 +400,7 @@ Provide insights on exploration vs exploitation, value function approximation, a
   }
 
   getRegionFocus(region) {
-    switch(region) {
+    switch (region) {
       case 'DLPFC': return "Executive Function";
       case 'VMPFC': return "Emotional Regulation";
       case 'OFC': return "Reward Processing";
@@ -407,10 +412,10 @@ Provide insights on exploration vs exploitation, value function approximation, a
 
   getActionStep(region, output) {
     const keyPoint = this.extractKeyPoint(output);
-    switch(region) {
+    switch (region) {
       case 'DLPFC': return `Implement a structured approach: ${keyPoint}`;
-      case 'VMPFC': return `Manage emotions and assess personal relevance: ${keyPoint}`;
-      case 'OFC': return `Evaluate potential rewards and consequences: ${keyPoint}`;
+      case 'VMPFC': return `Prioritize emotional well-being: ${keyPoint}`;
+      case 'OFC': return `Consider potential rewards and consequences: ${keyPoint}`;
       case 'MPFC': return `Consider social implications: ${keyPoint}`;
       case 'ACC': return `Monitor for conflicts and adjust strategy: ${keyPoint}`;
       default: return `Consider the following: ${keyPoint}`;
@@ -419,7 +424,7 @@ Provide insights on exploration vs exploitation, value function approximation, a
 
   getChallengeFromRegion(region, output) {
     const keyPoint = this.extractKeyPoint(output);
-    switch(region) {
+    switch (region) {
       case 'DLPFC': return `Maintaining focus and organization: ${keyPoint}`;
       case 'VMPFC': return `Balancing emotions with rational decision-making: ${keyPoint}`;
       case 'OFC': return `Avoiding impulsive choices based on immediate rewards: ${keyPoint}`;
@@ -431,10 +436,10 @@ Provide insights on exploration vs exploitation, value function approximation, a
 
   getLongTermOutlook(region, output) {
     const keyPoint = this.extractKeyPoint(output);
-    switch(region) {
+    switch (region) {
       case 'DLPFC': return `With consistent application of executive functions, expect improved organization and goal achievement. ${keyPoint}`;
-      case 'VMPFC': return `By effectively regulating emotions, anticipate better decision-making and personal growth. ${keyPoint}`;
-      case 'OFC': return `Through careful reward evaluation, expect more satisfying long-term outcomes. ${keyPoint}`;
+      case 'VMPFC': return `By managing emotions effectively, anticipate improved decision-making and well-being. ${keyPoint}`;
+      case 'OFC': return `By considering long-term rewards, expect more balanced and fulfilling choices. ${keyPoint}`;
       case 'MPFC': return `By honing social cognition, anticipate improved relationships and social standing. ${keyPoint}`;
       case 'ACC': return `With enhanced conflict monitoring, expect smoother adaptation to challenges and consistent progress. ${keyPoint}`;
       default: return `Long-term outlook: ${keyPoint}`;
@@ -446,13 +451,13 @@ Provide insights on exploration vs exploitation, value function approximation, a
   }
 
   calculateReward(state, actions, nextState, combinedOutput) {
-    const outputLength = combinedOutput.length / 1000; // Normalize by 1000 characters
+    const outputLength = combinedOutput.length / 1000;
     const stateChange = nextState.reduce((sum, s, i) => sum + Math.abs(s - state[i]), 0);
     const actionDiversity = new Set(actions).size / actions.length;
-    
+
     const reward = outputLength * 0.5 + stateChange * 0.3 + actionDiversity * 0.2;
-    
-    return Math.tanh(reward); // Use tanh to keep the reward between -1 and 1
+
+    return Math.tanh(reward);
   }
 }
 
@@ -464,7 +469,7 @@ const createAssistants = async () => {
     const mpfc = await MPFCAssistant.createInstance();
     const acc = await ACCAssistant.createInstance();
     const qlearning = await QLearningAssistant.createInstance();
-    
+
     return {
       DLPFC: dlpfc,
       VMPFC: vmpfc,
@@ -488,4 +493,12 @@ const createAssistants = async () => {
   }
 };
 
-export { DLPFCAssistant, VMPFCAssistant, OFCAssistant, MPFCAssistant, ACCAssistant, QLearningAssistant, createAssistants };
+export {
+  DLPFCAssistant,
+  VMPFCAssistant,
+  OFCAssistant,
+  MPFCAssistant,
+  ACCAssistant,
+  QLearningAssistant,
+  createAssistants
+};
