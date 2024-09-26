@@ -1,85 +1,428 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCANUE</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/@tailwindcss/forms" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js"></script>
-    <style>
-        .response {
-            max-height: 50vh; /* Use viewport height for responsiveness */
-            overflow-y: auto;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SCANUE Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#3182ce',
+            secondary: '#805ad5',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
         }
-        #analyzeButton {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-    </style>
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .fade-in {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    .sentiment-bar {
+      height: 20px;
+      background: linear-gradient(to right, #ef4444, #fbbf24, #22c55e);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .sentiment-marker {
+      width: 4px;
+      height: 20px;
+      background-color: #000;
+      transition: transform 0.3s ease-in-out;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    @keyframes letterFade {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .letter-fade {
+      display: inline-block;
+      animation: letterFade 6s infinite;
+    }
+    .letter-fade:nth-child(2) { animation-delay: 1s; }
+    .letter-fade:nth-child(3) { animation-delay: 2s; }
+    .letter-fade:nth-child(4) { animation-delay: 3s; }
+    .letter-fade:nth-child(5) { animation-delay: 4s; }
+    .letter-fade:nth-child(6) { animation-delay: 5s; }
+
+    @container (min-width: 400px) {
+      .container-responsive {
+        flex-direction: row;
+      }
+    }
+
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+  </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
-    <div id="app" class="w-full max-w-lg bg-white p-6 shadow-lg rounded-lg">
-        <h1 class="text-2xl font-bold mb-4">SCANUE</h1>
-        <textarea id="inputText" placeholder="Describe your issue." class="w-full min-h-[100px] p-4 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mb-4 resize-none"></textarea>
-        <button id="analyzeButton" onclick="analyzeIssue()" class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors duration-300">
-            <span>Analyze</span>
-            <svg id="loadingSpinner" class="hidden animate-spin h-5 w-5 text-white ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8v8H4z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4a8 8 0 018 8h-8V4z" />
-            </svg>
+<body class="h-full bg-gray-50 dark:bg-gray-900 font-sans">
+  <div class="flex flex-col h-full">
+    <header class="bg-primary dark:bg-gray-800 text-white p-4 shadow-lg">
+      <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-2xl font-bold">
+          <span class="letter-fade">S</span>
+          <span class="letter-fade">C</span>
+          <span class="letter-fade">A</span>
+          <span class="letter-fade">N</span>
+          <span class="letter-fade">U</span>
+          <span class="letter-fade">E</span>
+        </h1>
+        <button id="themeToggle" class="p-2 rounded-full bg-white dark:bg-gray-700 text-primary dark:text-white">
+          <i class="fas fa-moon dark:hidden"></i>
+          <i class="fas fa-sun hidden dark:inline"></i>
         </button>
-        <div class="response mt-4 p-4 bg-gray-50 border rounded-md" id="response"></div>
+      </div>
+    </header>
+
+    <main class="flex-grow container mx-auto p-4 overflow-y-auto">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
+        <div class="flex mb-4 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
+          <button id="currentTab" class="flex-1 py-2 px-4 text-center transition-colors duration-200 bg-white dark:bg-gray-800 text-primary dark:text-white">Current</button>
+          <button id="historyTab" class="flex-1 py-2 px-4 text-center transition-colors duration-200">History</button>
+        </div>
+        <div id="currentContent">
+          <div class="container-responsive flex flex-col gap-4">
+            <div class="flex-grow relative">
+              <textarea id="inputText" class="w-full h-32 p-3 pr-12 border border-gray-300 dark:border-gray-600 rounded-lg resize-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary dark:focus:ring-secondary" placeholder="Describe your issue..."></textarea>
+              <button id="voiceInputBtn" class="absolute right-2 bottom-2 p-2 bg-primary hover:bg-primary-dark dark:bg-gray-700 dark:hover:bg-gray-600 text-white rounded-full transition-colors duration-200 pulse">
+                <i class="fas fa-microphone"></i>
+              </button>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-4 mb-4">
+            <button id="analyzeBtn" class="flex-1 px-6 py-3 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors duration-200 flex items-center justify-center">
+              <i class="fas fa-brain mr-2"></i> Analyze
+            </button>
+            <button id="resetBtn" class="flex-1 px-6 py-3 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 text-gray-800 dark:text-white rounded-lg transition-colors duration-200 flex items-center justify-center">
+              <i class="fas fa-undo mr-2"></i> Reset
+            </button>
+          </div>
+          <div id="sentimentAnalysis" class="mb-4 hidden">
+            <h3 class="text-lg font-semibold mb-2 text-gray-700 dark:text-gray-300">Sentiment Analysis</h3>
+            <div class="sentiment-bar">
+              <div class="sentiment-marker"></div>
+            </div>
+          </div>
+          <div id="conversation" class="max-h-[400px] overflow-y-auto mb-4 bg-gray-100 dark:bg-gray-700 rounded-lg p-4"></div>
+          <div id="followUpContainer" class="mb-4 hidden">
+            <textarea id="followUpInput" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg resize-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary dark:focus:ring-secondary" placeholder="Ask a follow-up question..."></textarea>
+            <button id="followUpBtn" class="mt-2 px-6 py-3 bg-secondary hover:bg-secondary-dark text-white rounded-lg transition-colors duration-200 flex items-center justify-center">
+              <i class="fas fa-comment mr-2"></i> Send Follow-up
+            </button>
+          </div>
+          <div id="error" class="hidden p-4 mb-4 text-red-700 bg-red-100 dark:bg-red-900 dark:text-red-100 rounded-lg"></div>
+        </div>
+        <div id="historyContent" class="hidden">
+          <div id="historyLog" class="max-h-[400px] overflow-y-auto"></div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="bg-primary dark:bg-gray-800 text-white p-4">
+      <div class="container mx-auto flex justify-between items-center">
+        <button id="saveBtn" class="px-4 py-2 bg-white dark:bg-gray-700 text-primary dark:text-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200 flex items-center">
+          <i class="fas fa-save mr-2"></i> Save History
+        </button>
+        <button id="shareBtn" class="px-4 py-2 bg-white dark:bg-gray-700 text-primary dark:text-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200 flex items-center">
+          <i class="fas fa-share-alt mr-2"></i> Share Results
+        </button>
+      </div>
+    </footer>
+  </div>
+
+  <div id="loading" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 hidden">
+    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 flex flex-col items-center glass-effect">
+      <div class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+      <p class="text-gray-700 dark:text-gray-300">Analyzing...</p>
     </div>
+  </div>
 
-    <script>
-        async function analyzeIssue() {
-            const inputText = document.getElementById('inputText').value;
-            const responseDiv = document.getElementById('response');
-            const loadingSpinner = document.getElementById('loadingSpinner');
-            
-            // Show loading spinner
-            loadingSpinner.classList.remove('hidden');
-            
-            responseDiv.style.opacity = 0;
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const inputText = document.getElementById('inputText');
+      const analyzeBtn = document.getElementById('analyzeBtn');
+      const resetBtn = document.getElementById('resetBtn');
+      const conversationDiv = document.getElementById('conversation');
+      const followUpContainer = document.getElementById('followUpContainer');
+      const followUpInput = document.getElementById('followUpInput');
+      const followUpBtn = document.getElementById('followUpBtn');
+      const errorDiv = document.getElementById('error');
+      const currentTab = document.getElementById('currentTab');
+      const historyTab = document.getElementById('historyTab');
+      const currentContent = document.getElementById('currentContent');
+      const historyContent = document.getElementById('historyContent');
+      const historyLog = document.getElementById('historyLog');
+      const saveBtn = document.getElementById('saveBtn');
+      const shareBtn = document.getElementById('shareBtn');
+      const themeToggle = document.getElementById('themeToggle');
+      const loadingOverlay = document.getElementById('loading');
+      const voiceInputBtn = document.getElementById('voiceInputBtn');
+      const sentimentAnalysis = document.getElementById('sentimentAnalysis');
+      const sentimentMarker = document.querySelector('.sentiment-marker');
 
-            try {
-                const response = await fetch('/analyze', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ inputText })
-                });
+      let history = [];
+      let conversationContext = [];
 
-                const data = await response.json();
-                if (response.ok) {
-                    responseDiv.textContent = data.response;
-                } else {
-                    responseDiv.textContent = 'Error: ' + data.error;
-                }
-                responseDiv.style.opacity = 1;
-            } catch (error) {
-                responseDiv.textContent = 'Error: ' + error.message;
-                responseDiv.style.opacity = 1;
-            } finally {
-                // Hide loading spinner
-                loadingSpinner.classList.add('hidden');
-            }
+      function showError(message) {
+        errorDiv.textContent = message;
+        errorDiv.classList.remove('hidden');
+      }
+
+      function hideError() {
+        errorDiv.classList.add('hidden');
+      }
+
+      function showLoading() {
+        loadingOverlay.classList.remove('hidden');
+      }
+
+      function hideLoading() {
+        loadingOverlay.classList.add('hidden');
+      }
+
+      function vibrate() {
+        if (navigator.vibrate) {
+          navigator.vibrate(50);
         }
+      }
 
-        document.getElementById('inputText').addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                analyzeIssue();
-            }
+      async function analyzeText(text, isFollowUp = false) {
+        showLoading();
+        hideError();
+
+        try {
+          const res = await fetch('/analyze', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+              inputText: text,
+              context: conversationContext
+            }),
+          });
+          const data = await res.json();
+          if (!res.ok) {
+            throw new Error(data.error || 'An unexpected error occurred');
+          }
+          addConversationEntry(text, data.response, isFollowUp);
+          conversationContext.push({ role: 'user', content: text });
+          conversationContext.push({ role: 'assistant', content: data.response });
+          if (!isFollowUp) {
+            history.push({ input: text, output: data.response });
+            updateHistoryLog();
+          }
+          updateSentimentAnalysis(data.sentiment);
+          followUpContainer.classList.remove('hidden');
+        } catch (error) {
+          showError(error.message);
+        } finally {
+          hideLoading();
+        }
+      }
+
+      analyzeBtn.addEventListener('click', async () => {
+        vibrate();
+        const inputTextValue = inputText.value.trim();
+        if (!inputTextValue) {
+          showError('Please enter some text to analyze.');
+          return;
+        }
+        analyzeBtn.disabled = true;
+        resetBtn.disabled = true;
+        await analyzeText(inputTextValue);
+        analyzeBtn.disabled = false;
+        resetBtn.disabled = false;
+        inputText.value = '';
+      });
+
+      followUpBtn.addEventListener('click', async () => {
+        vibrate();
+        const followUpText = followUpInput.value.trim();
+        if (!followUpText) {
+          showError('Please enter a follow-up question.');
+          return;
+        }
+        followUpBtn.disabled = true;
+        await analyzeText(followUpText, true);
+        followUpBtn.disabled = false;
+        followUpInput.value = '';
+      });
+
+      resetBtn.addEventListener('click', () => {
+        vibrate();
+        inputText.value = '';
+        conversationDiv.innerHTML = '';
+        hideError();
+        sentimentAnalysis.classList.add('hidden');
+        followUpContainer.classList.add('hidden');
+        conversationContext = [];
+      });
+
+      currentTab.addEventListener('click', () => {
+        vibrate();
+        setActiveTab(currentTab, historyTab);
+        if (document.startViewTransition) {
+          document.startViewTransition(() => {
+            currentContent.classList.remove('hidden');
+            historyContent.classList.add('hidden');
+          });
+        } else {
+          currentContent.classList.remove('hidden');
+          historyContent.classList.add('hidden');
+        }
+      });
+
+      historyTab.addEventListener('click', () => {
+        vibrate();
+        setActiveTab(historyTab, currentTab);
+        if (document.startViewTransition) {
+          document.startViewTransition(() => {
+            currentContent.classList.add('hidden');
+            historyContent.classList.remove('hidden');
+          });
+        } else {
+          currentContent.classList.add('hidden');
+          historyContent.classList.remove('hidden');
+        }
+      });
+
+      saveBtn.addEventListener('click', () => {
+        vibrate();
+        const blob = new Blob([JSON.stringify(history, null, 2)], { type: 'application/json' });
+        const href = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = href;
+        link.download = 'scanue-history.json';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+
+      shareBtn.addEventListener('click', async () => {
+        vibrate();
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: 'SCANUE Results',
+              text: `Conversation:\n${conversationDiv.innerText}`,
+            });
+          } catch (error) {
+            console.error('Error sharing:', error);
+            showError('Failed to share results. ' + error.message);
+          }
+        } else {
+          showError('Web Share API is not supported in your browser.');
+        }
+      });
+
+      themeToggle.addEventListener('click', () => {
+        vibrate();
+        document.documentElement.classList.toggle('dark');
+      });
+
+      voiceInputBtn.addEventListener('click', () => {
+        vibrate();
+        if ('webkitSpeechRecognition' in window) {
+          const recognition = new webkitSpeechRecognition();
+          recognition.continuous = false;
+          recognition.interimResults = false;
+
+          recognition.onstart = () => {
+            voiceInputBtn.classList.add('animate-pulse');
+          };
+
+          recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            inputText.value = transcript;
+          };
+
+          recognition.onend = () => {
+            voiceInputBtn.classList.remove('animate-pulse');
+          };
+
+          recognition.start();
+        } else {
+          showError('Speech recognition is not supported in your browser.');
+        }
+      });
+
+      function addConversationEntry(input, output, isFollowUp) {
+        const entry = document.createElement('div');
+        entry.className = 'mb-4 fade-in';
+        entry.innerHTML = `
+          <div class="bg-gray-200 dark:bg-gray-600 p-3 rounded-lg mb-2">
+            <p class="font-semibold text-gray-700 dark:text-gray-300">${isFollowUp ? 'Follow-up' : 'User'}:</p>
+            <p class="text-gray-800 dark:text-gray-200">${input}</p>
+          </div>
+          <div class="bg-primary bg-opacity-10 dark:bg-opacity-20 p-3 rounded-lg">
+            <p class="font-semibold text-primary dark:text-secondary">SCANUE:</p>
+            <p class="text-gray-800 dark:text-gray-200">${output}</p>
+          </div>
+        `;
+        conversationDiv.appendChild(entry);
+        conversationDiv.scrollTop = conversationDiv.scrollHeight;
+      }
+
+      function setActiveTab(activeTab, inactiveTab) {
+        activeTab.classList.add('bg-white', 'dark:bg-gray-800', 'text-primary', 'dark:text-white');
+        inactiveTab.classList.remove('bg-white', 'dark:bg-gray-800', 'text-primary', 'dark:text-white');
+      }
+
+      function updateHistoryLog() {
+        historyLog.innerHTML = '';
+        history.forEach((item, index) => {
+          const entry = document.createElement('div');
+          entry.className = 'bg-white dark:bg-gray-700 p-4 rounded-lg mb-4 shadow-md fade-in';
+          entry.innerHTML = `
+            <h3 class="text-lg font-semibold mb-2 text-primary dark:text-secondary">Analysis ${index + 1}</h3>
+            <p class="text-gray-600 dark:text-gray-400 mb-2"><strong>Input:</strong> ${item.input}</p>
+            <p class="text-gray-700 dark:text-gray-300"><strong>Output:</strong> ${item.output}</p>
+          `;
+          historyLog.appendChild(entry);
         });
+      }
 
-        gsap.from("#app", { opacity: 0, y: 30, duration: 1 });
-        gsap.from("#analyzeButton", { scale: 0, duration: 0.1, delay: 0.1 });
-    </script>
+      // Initialize the UI
+      setActiveTab(currentTab, historyTab);
+
+      // Intersection Observer for lazy loading
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('fade-in');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    });
+  </script>
 </body>
 </html>
