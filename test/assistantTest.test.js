@@ -57,7 +57,7 @@ describe('Assistant Tests', function() {
       const response = await assistants.ACC.analyze(inputText);
       console.log('Actual Response:', response); // Log the actual response
       expect(response).to.be.a('string');
-      expect(response).to.match(/managing time/i); // Adjust to match key concept
+      expect(response).to.match(/managing time/i);
       expect(response).to.match(/assessing risks/i);
       expect(response).to.match(/understanding rewards/i);
       expect(response).to.match(/resolving conflicts/i);
