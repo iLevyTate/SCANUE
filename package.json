@@ -20,5 +20,8 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.4"
-  }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
 }
