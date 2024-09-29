@@ -1,26 +1,70 @@
-// refinedWordLists.js
+const refinedWordLists = {
+  positive: [
+    'good', 'great', 'excellent', 'outstanding', 'superb', 'fantastic', 'wonderful', 'amazing', 'awesome', 'brilliant',
+  ],
+  negative: [
+    'bad', 'terrible', 'awful', 'poor', 'unfortunate', 'unpleasant', 'unhappy', 'sad', 'depressed', 'angry',
+  ],
+  focus: [
+    'focus', 'concentrate', 'attention', 'awareness', 'alertness', 'vigilance', 'diligence', 'carefulness', 'thoroughness',
+  ],
+  progress: [
+    'progress', 'advance', 'improve', 'enhance', 'develop', 'grow', 'increase', 'expand', 'extend', 'enlarge',
+  ],
+  control: [
+    'control', 'manage', 'regulate', 'govern', 'direct', 'guide', 'lead', 'command', 'authorize', 'empower',
+  ],
+  risk: [
+    'risk', 'danger', 'hazard', 'threat', 'peril', 'uncertainty', 'insecurity', 'instability', 'unpredictability',
+  ],
+  social: [
+    'social', 'society', 'community', 'group', 'team', 'collaboration', 'cooperation', 'communication', 'interaction',
+  ],
+  personal: [
+    'personal', 'individual', 'private', 'intimate', 'emotional', 'psychological', 'mental', 'spiritual',
+  ],
+  outcome: [
+    'outcome', 'result', 'consequence', 'effect', 'impact', 'influence', 'success', 'failure', 'achievement',
+  ],
+  reward: [
+    'reward', 'prize', 'award', 'recognition', 'appreciation', 'gratitude', 'acknowledgment', 'compensation',
+  ],
+  probability: [
+    'probability', 'chance', 'likelihood', 'possibility', 'certainty', 'uncertainty', 'risk', 'danger',
+  ],
+  time: [
+    'time', 'duration', 'period', 'interval', 'delay', 'latency', 'response', 'reaction',
+  ],
+  punishment: [
+    'punishment', 'penalty', 'sanction', 'discipline', 'correction', 'reprimand', 'warning', 'admonition',
+  ],
+  options: [
+    'option', 'choice', 'alternative', 'selection', 'decision', 'preference', 'priority', 'consideration',
+  ],
+  socialCues: [
+    'social cue', 'social signal', 'nonverbal cue', 'verbal cue', 'facial expression', 'body language', 'tone of voice',
+  ],
+  mentalizing: [
+    'mentalizing', 'theory of mind', 'perspective taking', 'empathy', 'sympathy', 'understanding', 'insight',
+  ],
+  perspective: [
+    'perspective', 'viewpoint', 'point of view', 'angle', 'aspect', 'facet', 'dimension', 'context',
+  ],
+  norms: [
+    'norm', 'standard', 'rule', 'regulation', 'convention', 'tradition', 'custom', 'expectation',
+  ],
+  conflict: [
+    'conflict', 'disagreement', 'dispute', 'argument', 'debate', 'controversy', 'discord', 'tension',
+  ],
+  error: [
+    'error', 'mistake', 'fault', 'flaw', 'defect', 'imperfection', 'inaccuracy', 'incorrectness',
+  ],
+  feedback: [
+    'feedback', 'response', 'reaction', 'comment', 'criticism', 'evaluation', 'assessment', 'appraisal',
+  ],
+  adaptation: [
+    'adaptation', 'adjustment', 'modification', 'change', 'revision', 'update', 'improvement', 'enhancement',
+  ],
+};
 
-export const refinedWordLists = {
-    focus: ['focus', 'concentrate', 'attention', 'mindful', 'aware', 'alert', 'vigilant', 'observant', 'attentive', 'engaged'],
-    progress: ['progress', 'advance', 'improve', 'develop', 'achieve', 'grow', 'evolve', 'upgrade', 'enhance', 'excel'],
-    control: ['control', 'manage', 'regulate', 'direct', 'govern', 'guide', 'steer', 'oversee', 'supervise', 'command'],
-    positive: ['good', 'great', 'excellent', 'positive', 'happy', 'joy', 'delighted', 'pleased', 'satisfied', 'content'],
-    negative: ['bad', 'terrible', 'negative', 'sad', 'angry', 'fear', 'upset', 'disappointed', 'frustrated', 'anxious'],
-    risk: ['risk', 'danger', 'hazard', 'threat', 'uncertainty', 'peril', 'jeopardy', 'gamble', 'chance', 'venture'],
-    social: ['social', 'community', 'relationship', 'interaction', 'communication', 'network', 'connection', 'engagement', 'collaboration', 'partnership'],
-    personal: ['I', 'me', 'my', 'mine', 'myself', 'self', 'individual', 'personal', 'private', 'own'],
-    outcome: ['result', 'outcome', 'consequence', 'effect', 'impact', 'repercussion', 'aftermath', 'conclusion', 'end', 'product'],
-    reward: ['reward', 'prize', 'benefit', 'gain', 'profit', 'advantage', 'bonus', 'incentive', 'perk', 'payoff'],
-    probability: ['likely', 'probable', 'chance', 'odds', 'possibility', 'likelihood', 'potential', 'prospect', 'probability', 'feasibility'],
-    time: ['soon', 'later', 'delay', 'wait', 'future', 'immediate', 'postpone', 'schedule', 'timeline', 'duration'],
-    punishment: ['punishment', 'penalty', 'fine', 'consequence', 'reprimand', 'discipline', 'sanction', 'retribution', 'chastisement', 'correction'],
-    options: ['option', 'alternative', 'choice', 'possibility', 'selection', 'variety', 'range', 'assortment', 'pick', 'preference'],
-    socialCues: ['gesture', 'expression', 'tone', 'body language', 'facial', 'signal', 'hint', 'indication', 'nonverbal', 'cue'],
-    mentalizing: ['think', 'believe', 'feel', 'intend', 'want', 'desire', 'wish', 'hope', 'expect', 'anticipate'],
-    perspective: ['perspective', 'viewpoint', 'opinion', 'stance', 'attitude', 'outlook', 'position', 'angle', 'approach', 'interpretation'],
-    norms: ['norm', 'standard', 'convention', 'rule', 'expectation', 'custom', 'tradition', 'practice', 'protocol', 'etiquette'],
-    conflict: ['conflict', 'disagreement', 'dispute', 'contradiction', 'clash', 'opposition', 'friction', 'tension', 'discord', 'argument'],
-    error: ['error', 'mistake', 'fault', 'flaw', 'inaccuracy', 'blunder', 'slip', 'oversight', 'miscalculation', 'lapse'],
-    feedback: ['feedback', 'response', 'reaction', 'critique', 'evaluation', 'assessment', 'appraisal', 'review', 'opinion', 'comment'],
-    adaptation: ['adapt', 'adjust', 'modify', 'change', 'alter', 'acclimate', 'accommodate', 'evolve', 'transform', 'shift']
-  };
+export { refinedWordLists };
