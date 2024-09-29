@@ -216,7 +216,11 @@
         hideError();
 
         try {
-          const res = await fetch('/analyze', {
+          console.log('Sending request to /api/analyze'); // Updated log message
+          console.log('Input text:', text);
+          console.log('Context:', conversationContext);
+
+          const res = await fetch('/api/analyze', { // Changed from '/analyze' to '/api/analyze'
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -226,10 +230,16 @@
               context: conversationContext
             }),
           });
+
+          console.log('Response status:', res.status);
+
           const data = await res.json();
+          console.log('Response data:', data);
+
           if (!res.ok) {
             throw new Error(data.error || 'An unexpected error occurred');
           }
+
           addConversationEntry(text, data.response, isFollowUp);
           conversationContext.push({ role: 'user', content: text });
           conversationContext.push({ role: 'assistant', content: data.response });
@@ -240,6 +250,7 @@
           updateSentimentAnalysis(data.sentiment);
           followUpContainer.classList.remove('hidden');
         } catch (error) {
+          console.error('Error in analyzeText:', error);
           showError(error.message);
         } finally {
           hideLoading();
