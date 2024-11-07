@@ -1,4 +1,5 @@
 # SCANUE ([SCAN](https://github.com/iLevyTate/SCAN) Using Experts/ User Extensible)
+[![DOI](https://zenodo.org/badge/827576533.svg)](https://doi.org/10.5281/zenodo.14052758)
 
 ![SCANUEGITHUBLOGO](https://github.com/user-attachments/assets/3e01f56c-9dab-4b0a-a666-ecc66fe8b75b)
 
