@@ -1,8 +1,8 @@
-# SCANUE ([SCAN](https://github.com/iLevyTate/SCAN) Using Experts.js)
+# SCANUE ([SCAN](https://github.com/iLevyTate/SCAN) Using Experts/ User Extensible)
 
 ![SCANUEGITHUBLOGO](https://github.com/user-attachments/assets/3e01f56c-9dab-4b0a-a666-ecc66fe8b75b)
 
-Welcome to the SCANUE repository! This project focuses on creating a Synthetic Cognitive Augmentation Network ([SCAN](https://github.com/iLevyTate/SCAN)) using Experts.js and web-based technologies to replicate and enhance prefrontal cortex (PFC) functions for decision-making, problem-solving, and planning.
+Welcome to the SCANUE repository! This project focuses on creating a Synthetic Cognitive Augmentation Network ([SCAN](https://github.com/iLevyTate/SCAN)) using Experts/ User Extensible and web-based technologies to replicate and enhance prefrontal cortex (PFC) functions for decision-making, problem-solving, and planning.
 
 ## Table of Contents
 
