@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SCANUE Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js" integrity="sha384-Cs3dgUx6+jDxxuqHvVH8Onpyj2LF1gKZurLDlhqzuJmUqVYMJ0THTWpxK5Z086Zm" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk" crossorigin="anonymous"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -389,13 +389,15 @@
         entry.innerHTML = `
           <div class="bg-gray-200 dark:bg-gray-600 p-3 rounded-lg mb-2">
             <p class="font-semibold text-gray-700 dark:text-gray-300">${isFollowUp ? 'Follow-up' : 'User'}:</p>
-            <p class="text-gray-800 dark:text-gray-200">${input}</p>
+            <p class="text-gray-800 dark:text-gray-200" data-conversation-input></p>
           </div>
           <div class="bg-primary bg-opacity-10 dark:bg-opacity-20 p-3 rounded-lg">
             <p class="font-semibold text-primary dark:text-secondary">SCANUE:</p>
-            <p class="text-gray-800 dark:text-gray-200">${output}</p>
+            <p class="text-gray-800 dark:text-gray-200" data-conversation-output></p>
           </div>
         `;
+        entry.querySelector("[data-conversation-input]").textContent = input;
+        entry.querySelector("[data-conversation-output]").textContent = output;
         conversationDiv.appendChild(entry);
         conversationDiv.scrollTop = conversationDiv.scrollHeight;
       }
