@@ -23,6 +23,9 @@
   "overrides": {
     "tar": "^7.5.21",
     "adm-zip": "^0.6.1",
-    "proxy-addr": "^2.0.8"
+    "proxy-addr": "^2.0.8",
+    "nodemon": {
+      "minimatch": "^11.0.9"
+    }
   }
 }
