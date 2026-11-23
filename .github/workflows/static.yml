@@ -1,43 +1,58 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+name: SCANUE Pages
 
 on:
-  # Runs on pushes targeting the default branch
+  pull_request:
+    paths:
+      - docs/pages/**
+      - public/index.html
+      - .github/workflows/static.yml
   push:
-    branches: ["main"]
-
-  # Allows you to run this workflow manually from the Actions tab
+    branches: [main]
+    paths:
+      - docs/pages/**
+      - public/index.html
+      - .github/workflows/static.yml
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
-  group: "pages"
+  group: scanue-pages-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
+  package:
+    name: Package SCANUE site
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Stage the static site
+        run: |
+          test -s docs/pages/index.html
+          test -s public/index.html
+          install -D -m 644 docs/pages/index.html "$RUNNER_TEMP/scanue-site/index.html"
+          install -D -m 644 public/index.html "$RUNNER_TEMP/scanue-site/public/index.html"
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: ${{ runner.temp }}/scanue-site
+
   deploy:
+    name: Deploy SCANUE site
+    if: github.ref == 'refs/heads/main'
+    needs: package
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # Upload entire repository
-          path: '.'
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
